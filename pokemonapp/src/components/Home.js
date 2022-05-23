@@ -1,34 +1,65 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import './css/home.css'
 
 const Home = (props) => {
 
   const [apiResponse, setApiResponse] = useState({})
+  const [paginationStuff, setPaginationStuff] = useState({
+    limit: 48,
+    offset: 0
+  })
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=10&offset=0`)
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${paginationStuff.limit}&offset=${paginationStuff.offset}`)
       setApiResponse(response.data)
     }
     fetchData()
-  }, [])
-  
+  }, [paginationStuff])
+
   return (
-    <div>
-      <ul>
+    <div className="home">
+      <ul className="pokemon-list">
         {
           Object.keys(apiResponse).length > 0 ?
             apiResponse.results.map((pokemon, index) => {
-              return(
-                <li key={index} onClick={() => {
-                  props.fetch(pokemon.url)
-                }}>{pokemon.name}</li>
+              return (
+                <li key={index} className="pokemon-name">
+                  {pokemon.name}
+                  <img className="pokeball" alt="pokeball" src="./pokemonLogo.png" onClick={() => {
+                    props.fetch(pokemon.url)
+                  }} />
+                </li>
               )
             })
-          : null
+            : null
         }
       </ul>
+
+      <div className="pagination-container">
+        <div className="pagination" onClick={() => {
+          if (paginationStuff.offset !== 0) {
+            setPaginationStuff({
+              limit: paginationStuff.limit,
+              offset: paginationStuff.offset - paginationStuff.limit
+            })
+          }
+
+        }}>
+          ◄
+        </div>
+        <div className="pagination" onClick={() => {
+          if (paginationStuff.offset < apiResponse.count - paginationStuff.limit) {
+            setPaginationStuff({
+              limit: paginationStuff.limit,
+              offset: paginationStuff.offset + paginationStuff.limit 
+            })
+          }
+        }}>
+          ►
+        </div>
+      </div>
     </div>
   )
 }

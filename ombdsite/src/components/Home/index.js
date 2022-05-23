@@ -1,0 +1,41 @@
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import './style.css'
+
+function Home(props) {
+
+    const [movies, setMovies] = useState([])
+    const [userSearch, setUserSearch] = useState('')
+
+    const fetchData = async () => {
+        let response = await axios.get(`https://www.omdbapi.com/?apikey=${process.env.REACT_APP_API_KEY}&s=${userSearch}`)
+        setMovies(response.data.Search)
+    }
+
+    return ( 
+        <div>
+
+            <h1>Home</h1>
+            <input onChange={(event) => setUserSearch(event.target.value)} />
+            <button onClick={() => fetchData()} >Search</button>
+
+            {movies ? movies.map((movie, index) =>
+                <div key={index} className='movie-card'>
+                    <h3>{movie.Title}</h3>
+                    <h5>type: {movie.Type}</h5>
+                    <h5>year: {movie.Year}</h5>
+                    <img src={movie.Poster} />
+                    <button onClick={() => {
+                      props.setId(movie.imdbID)
+                    }}
+                    >More Information</button>
+                </div>
+            ) : null}
+            
+        </div>
+     );
+}
+
+export default Home;
+
+// // https://www.omdbapi.com/?apikey=3d7eed43&s=avatar
