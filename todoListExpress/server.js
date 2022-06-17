@@ -30,4 +30,7 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
 
+const taskListRoutes = require('./routes/taskList');
+app.use('/taskLists', taskListRoutes);
+
 app.listen(PORT, () => console.log('listening on port ' + PORT));
