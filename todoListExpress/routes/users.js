@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = process.env.SALT_ROUNDS;
 const jwtSecret = process.env.JWT_SECRET;
 const jwt = require('jwt-simple');
-const { validate } = require('../middlewares');
+const { validate, login } = require('../middlewares');
 
 // Index
 
@@ -68,5 +68,21 @@ router.get('/show', validate, (req, res) => {
     }
   });
 });
+
+// Login
+
+router.post('/login', login, (req, res) => {
+  if (req.result) { // if the result of the "login" middleware is true
+    let encoded = jwt.encode({ 
+      password: req.password, // make a new jwt token using the username and password from the "login" middleware
+      name: req.name
+    }, jwtSecret);
+    res.status(200).json({
+      jwtToken: encoded // sends back a 200 with the jwtToken
+    });
+  } else {
+    res.status(403).json({}); // else sends back a 403 forbidden
+  }
+})
 
 module.exports = router;

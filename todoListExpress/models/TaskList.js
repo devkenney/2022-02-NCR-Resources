@@ -9,7 +9,8 @@ const taskListSchema = new Schema ({
       content: { type: String, required: true },
       completed: { type: Boolean, default: false }
     }
-  ]
+  ],
+  user: { type: Schema.Types.ObjectId, ref: 'User' }
 })
 
 const TaskList = mongoose.model('TaskList', taskListSchema);

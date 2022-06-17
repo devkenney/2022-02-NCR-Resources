@@ -6,7 +6,24 @@ const User = require('../models/User');
 
 // Index
 
-
+router.get('/', validate, (req, res) => {
+  TaskList.find({
+    user: {
+      _id: req.id
+    }
+  }, (error, allTaskLists) => {
+    if (error) {
+      console.error(error);
+      res.status(404).json({
+        error: error
+      });
+    } else {
+      res.status(200).json({
+        taskLists: allTaskLists
+      });
+    }
+  });
+});
 
 // Delete
 
@@ -43,7 +60,8 @@ router.put('/addTask/:id', validate, (req, res) => {
 
 router.post('/', validate, (req, res) => {
   TaskList.create({ // Creates a new TaskList
-    name: req.body.name // uses the name given in the body
+    name: req.body.name, // uses the name given in the body
+    user: req.id
   }, (error, createdTaskList) => {
     if (error) {
       console.error(error);

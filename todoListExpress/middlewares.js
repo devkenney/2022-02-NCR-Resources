@@ -18,6 +18,7 @@ const validate = (req, res, next) => {
         } else {
           if (decoded.password === foundUser.password) { // if the decoded password (still hashed) matches the password stored in the database (still hashed)
             req.name = foundUser.name
+            req.id = foundUser._id
             next(); // do the next thing (because it is successfully validated)
           } else {
             res.status(403).json({ // sends back forbidden because username and password combo are wrong
@@ -38,6 +39,31 @@ const validate = (req, res, next) => {
   }
 }
 
+const login = (req, res, next) => {
+  User.findOne({ // finds ONE user
+    name: req.body.name // using the name the user entered on the login page
+  }, async (error, foundUser) => {
+    if (error) {
+      console.error(error);
+      res.status(400).json({ // error handling magic
+        error: error
+      });
+    } else if (foundUser === null) {
+      res.status(404).json({ // if no user was found, return a 404
+        error: "not found"
+      });
+    } else {
+      console.log('successfully found user');
+      const result = await bcrypt.compare(req.body.password, foundUser.password); // compares the password the user entered to the one in the database using bcrypt
+      req.result = result; // sets req.result equal to the result of the comparison (true or false)
+      req.name = foundUser.name;
+      req.password = foundUser.password
+      next(); // goes to the next thingy
+    }
+  });
+}
+
 module.exports = {
-  validate
+  validate,
+  login
 }
