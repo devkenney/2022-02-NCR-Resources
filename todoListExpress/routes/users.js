@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
   }, (error, createdUser) => { // creates a new user using the hashed password and the name the user put in on the frontend
     if (error) {
       console.error(error);
-      res.status(400).json({ // if an error occured send a 400 response
+      res.status(400).json({ // if an error occurred send a 400 response
         error: error
       });
     } else {
@@ -83,6 +83,6 @@ router.post('/login', login, (req, res) => {
   } else {
     res.status(403).json({}); // else sends back a 403 forbidden
   }
-})
+});
 
 module.exports = router;
