@@ -25,10 +25,7 @@ app.get('/', (req, res) => {
   res.status(200).json({
     message: 'SUCCESS'
   })
-})
-
-const taskRoutes = require('./routes/tasks');
-app.use('/tasks', taskRoutes);
+});
 
 const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
