@@ -17,32 +17,6 @@ const { validate } = require('../middlewares');
 
 // Update
 
-// Route to Add a list
-
-router.put('/newList', validate, (req, res) => {
-  User.updateOne({
-    name: req.name // gets the req.name from the validate middleware and uses it to find the correct user
-  }, {
-    $push: {
-      taskLists: {
-        name: req.body.listName // pushes a new task list into the correct array using the "listName" key from req.body
-      }
-    }
-  }, (error, updateData) => {
-    if (error) {
-      console.error(error);
-      res.status(404).json({ // mongoose error handling
-        error: error
-      });
-    } else {
-      console.log('Successfully added a task list!');
-      res.status(200).json({
-        updateData: updateData // sends back the update data from the mongoose action
-      });
-    }
-  });
-});
-
 // Create
 
 router.post('/', async (req, res) => {
